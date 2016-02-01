@@ -8,8 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "APRoundedButton.h"
+#import "DayDatePickerView.h"
 
-@interface infoclientViewContoller : UIViewController<UITextFieldDelegate,UITableViewDataSource, UITableViewDelegate>
+
+
+@interface infoclientViewContoller : UIViewController<UITextFieldDelegate,UITableViewDataSource, UITableViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate ,DayDatePickerViewDataSource, DayDatePickerViewDelegate>
+
 @property (strong, nonatomic) IBOutlet UITextField *nom;
 @property (strong, nonatomic) IBOutlet UITextField *prenom;
 @property (strong, nonatomic) IBOutlet UITextField *adresse;
@@ -40,6 +44,8 @@
 - (IBAction)delAll:(id)sender;
 @property (strong, nonatomic) IBOutlet UIView *reccommview;
 - (IBAction)affRecComm:(id)sender;
+@property (weak, nonatomic) IBOutlet DayDatePickerView *dtPicker;
+
 
 
 @property (strong, nonatomic) IBOutlet APRoundedButton *closereccomm;
@@ -47,7 +53,11 @@
 @property (strong, nonatomic) IBOutlet APRoundedButton *btreccomm;
 
 - (IBAction)hidereccomm:(id)sender;
+@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (weak, nonatomic) IBOutlet UIView *dateView;
+- (IBAction)ValidDate:(id)sender;
 
 - (IBAction)recherchecommandenum:(id)sender;
+@property (weak, nonatomic) IBOutlet UIPickerView *timePicker;
 
 @end

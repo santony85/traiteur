@@ -9,6 +9,8 @@
 #import "planbAppDelegate.h"
 #import "hpdf.h"
 
+#import "GlobalV.h"
+
 
 @implementation planbAppDelegate
 
@@ -18,9 +20,15 @@
     
     
     //lire version catalogue
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs setObject:@"" forKey:@"vendeur"];
     
     
+    //NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs setInteger:0 forKey:@"fromvideo"];
     
+    GlobalV *setVar = [[GlobalV alloc] init];
+    [setVar setVar];
     
     return YES;
 }

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BorderButton.h"
+#import "NSFavoris.h"
 
 @interface produitcell : UICollectionViewCell
 @property (strong, nonatomic) IBOutlet UILabel *desc;
@@ -15,5 +16,8 @@
 @property (strong, nonatomic) IBOutlet UITextField *qte;
 @property (strong, nonatomic) IBOutlet BorderButton *addBt;
 @property (weak, nonatomic) IBOutlet UIImageView *imgProd;
+
+@property (strong, nonatomic) IBOutlet NSFavoris *fav;
+@property (strong, nonatomic) IBOutlet UILabel *id;
 
 @end

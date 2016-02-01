@@ -10,12 +10,15 @@
 
 @interface NSProduithc : NSObject
 
-@property (nonatomic, retain) NSString *idproduithc;
+@property (nonatomic, retain) NSString *idproduit;
 @property (nonatomic, retain) NSString *idcommande;
 
 @property (nonatomic, retain) NSString *prix;
 @property (nonatomic, retain) NSString *qte;
 @property (nonatomic, retain) NSString *commentaire;
 @property (nonatomic, retain) NSString *designation;
+
+@property (nonatomic, retain) NSString *ref;
+@property (nonatomic, retain) NSString *nom;
 
 @end

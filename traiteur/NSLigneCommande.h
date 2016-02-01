@@ -15,5 +15,6 @@
 @property (nonatomic, retain) NSString *idproduit;
 @property (nonatomic, retain) NSString *qte;
 @property (nonatomic, retain) NSString *commentaire;
+@property (nonatomic, retain) NSString *id;
 
 @end

@@ -7,6 +7,21 @@
 //
 
 #import "pdfGeneratorView.h"
+#import "dataBase.h"
+#import "apiconnect.h"
+#import "GlobalV.h"
+#import "UYLGenericPrintPageRenderer.h"
+#import "MyPrintPageRenderer.h"
+
+@interface pdfGeneratorView (){
+
+    dataBase *sqlManager;
+    apiconnect *connect;
+     NSMutableArray *readlst;
+
+}
+
+@end
 
 @implementation pdfGeneratorView
 
@@ -16,10 +31,27 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    connect = [[apiconnect alloc] init];
+    
+    NSLog(@"%@",_commande.idcommande);
+    readlst  = [connect getPrint :_commande.idcommande :idMagasin :@"bdcu" :catalogue];
+    NSLog(@"%@",readlst);
+    //getPrint:(NSString *)collection :(NSString *)idname;
+    //readlst = [connect getPrint:@"lignecommande" :@"idcommande" :commande.idcommande];
        // Create and open pdf file
-    [self createPDFFile];
-    [self loadPDFFile];
-}
+    //[self createPDFFile];
+    //[self loadPDFFile];
+   
+
+    NSString *urlString =  [NSString stringWithFormat:@"http://be-instore.fr/upload/pdf/%@.pdf",_commande.idcommande];
+    NSLog(@"%@",urlString);
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
+    [self.webView  loadRequest:urlRequest];
+    
+    
+   }
 
 
 
@@ -56,9 +88,22 @@
     NSData *myData = [NSData dataWithContentsOfFile: path];
     
     
+    NSString *urls =  [NSString stringWithFormat:@"http://be-instore.fr/upload/pdf/%@.pdf",_commande.idcommande];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:urls]];
+    [request setHTTPMethod: @"GET"];
+    //[request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
+    
+
+    
+    NSData *returnData = [NSURLConnection sendSynchronousRequest: request returningResponse: nil error: nil];
+    //NSLog(@"%@",returnData);
+
+    
+    
     UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
     
-    if(pic && [UIPrintInteractionController canPrintData: myData] ) {
+    if(pic && [UIPrintInteractionController canPrintData: returnData] ) {
         
         pic.delegate = self;
         
@@ -66,9 +111,32 @@
         printInfo.outputType = UIPrintInfoOutputGeneral;
         printInfo.jobName = [path lastPathComponent];
         printInfo.duplex = UIPrintInfoDuplexLongEdge;
+        
         pic.printInfo = printInfo;
         pic.showsPageRange = YES;
-        pic.printingItem = myData;
+        pic.printingItem = returnData;
+        
+        //UYLGenericPrintPageRenderer *renderer = [[UYLGenericPrintPageRenderer alloc] init];
+        //renderer.headerText = @"";
+        //renderer.footerText = @"";
+        
+        MyPrintPageRenderer *myRenderer = [[MyPrintPageRenderer alloc] init];
+        
+        
+        UIViewPrintFormatter *formatter = [self.webView viewPrintFormatter];
+        UIFont *font = [UIFont fontWithName:@"Helvetica" size:HEADER_FOOTER_TEXT_HEIGHT];
+        CGSize titleSize = [myRenderer.jobTitle sizeWithFont:font];
+        myRenderer.headerHeight = myRenderer.footerHeight = titleSize.height + HEADER_FOOTER_MARGIN_PADDING;
+
+        [myRenderer addPrintFormatter:formatter startingAtPageAtIndex:0];
+        // Set our custom renderer as the printPageRenderer for the print job.
+        pic.printPageRenderer = myRenderer;
+        
+        
+        //[renderer addPrintFormatter:formatter startingAtPageAtIndex:0];
+        //pic.printPageRenderer = renderer;
+        
+
         
         
         [pic presentFromRect:CGRectMake(10, 10, 0, 0) inView:self.webView animated:YES completionHandler: ^(UIPrintInteractionController *ctrl, BOOL ok, NSError *e) {

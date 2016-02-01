@@ -7,7 +7,7 @@
 //
 
 #import "apiconnect.h"
-//#import "GlobalV.h"
+#import "GlobalV.h"
 #import "NSString+URLEncoding.h"
 
 @implementation apiconnect{
@@ -64,10 +64,33 @@
 
 }
 
+
+-(NSMutableArray *)NewgetList:(NSString *)collection :(NSString *)idp {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSError *error = nil;
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/getprodjson/%@/%@",collection,idp];
+    NSLog(@"%@",url);
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod: @"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
+    NSData *returnData = [NSURLConnection sendSynchronousRequest: request returningResponse: nil error: &error];
+    if(error==nil){
+        NSDictionary *list =[NSJSONSerialization JSONObjectWithData:returnData options:kNilOptions error:&error];
+        if(error==nil){result = list;}
+    }
+    else [self afficherAlertReseau];
+    
+    return result;
+    
+}
+
+
+
 -(NSMutableArray *)getList:(NSString *)collection :(int)idp {
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSError *error = nil;
-    NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/list/%@/%d",collection,idp];
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/list/%@/%d",collection,idp];
     NSLog(@"%@",url);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
@@ -87,7 +110,7 @@
 -(NSMutableArray *)getSpec:(NSString *)collection :(NSString *)idname :(NSString *)idp  {
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSError *error = nil;
-    NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/spec/%@/%@/%@",collection,idname,idp];
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/spec/%@/%@/%@",collection,idname,idp];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
     [request setHTTPMethod: @"GET"];
@@ -118,7 +141,7 @@
     NSString *encodedString = [NSString stringWithFormat:@"%@",[idp urlEncodeUsingEncoding:NSUTF8StringEncoding]];
     //NSLog(@"%@",encodedString);
 
-    NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/specidc/%@/%d/%@/%@",collection,idClientG,idname,encodedString];
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/specidc/%@/%@/%@/%@/%@",collection,idMagasin,idname,encodedString,catalogue];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
     [request setHTTPMethod: @"GET"];
@@ -177,13 +200,19 @@
 }
 
 -(NSString *)postUnit :(NSString *)collection :(NSDictionary *)data{
-  NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/unit/%@",collection];
+  NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/postunit/%@",collection];
   NSMutableString *urlWithQuerystring = [[NSMutableString alloc] init];
+    int i=0;
     for (id key in data) {
         NSString *keyString = [key description];
         NSString *valueString = [[data objectForKey:key] description];
         [urlWithQuerystring appendFormat:@"&%@=%@", keyString, valueString];
+
     }
+    
+    
+    urlWithQuerystring = [urlWithQuerystring substringFromIndex:1];
+    
     //[urlWithQuerystring appendFormat:@"&idclient=%d", idClientG];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
@@ -417,7 +446,7 @@
 -(NSMutableArray *)getLike:(NSString *)collection :(NSString *)champ :(NSString *)val {
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSError *error = nil;
-    NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/like/%@/%@/%@",collection,champ,val];
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/likext/%@/%@/%@/%@/%@",collection,champ,val,catalogue,idMagasin];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
     [request setHTTPMethod: @"GET"];
@@ -439,7 +468,7 @@
 -(int)delUnit :(NSString *)collection :(NSString *)champ :(NSString *)val{
     NSMutableArray *result = [[NSMutableArray alloc] init];
     NSError *error = nil;
-    NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/unit/%@/%@/%@",collection,champ,val];
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/delunit/%@/%@/%@",collection,champ,val];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
     [request setHTTPMethod: @"DELETE"];
@@ -451,7 +480,7 @@
 }
 
 -(NSString *)updateUnit :(NSString *)collection :(NSDictionary *)data :(NSString *)mid{
-    NSString *url =  [NSString stringWithFormat:@"http://planb-apps.com:4210/1.0/unit/%@/%@",collection,mid];
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/updateunit/%@/%@",collection,mid];
     NSMutableString *urlWithQuerystring = [[NSMutableString alloc] init];
     for (id key in data) {
         NSString *keyString = [key description];
@@ -494,6 +523,29 @@
     return 0;
     
 }
+
+-(NSMutableArray *)getPrint:(NSString *)collection :(NSString *)idname :(NSString *)page :(NSString *)cat{
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSError *error = nil;
+    NSString *url =  [NSString stringWithFormat:@"http://be-instore.fr/print/%@/%@/%@/%@",collection,idname,page,cat];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod: @"GET"];
+    //[request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
+    
+    NSLog(@"%@",url);
+    
+    NSData *returnData = [NSURLConnection sendSynchronousRequest: request returningResponse: nil error: &error];
+    if(error==nil){
+        NSDictionary *list =[NSJSONSerialization JSONObjectWithData:returnData options:kNilOptions error:&error];
+        if(error==nil){result = list;}
+    }
+    else [self afficherAlertReseau];
+    
+    return result;
+    
+}
+
 
 
 @end

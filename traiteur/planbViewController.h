@@ -11,7 +11,7 @@
 #import "NSClient.h"
 
 
-@interface planbViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,UICollectionViewDataSource, UICollectionViewDelegate,UITextFieldDelegate>
+@interface planbViewController : UIViewController<UITableViewDataSource, UITableViewDelegate,UICollectionViewDataSource, UICollectionViewDelegate,UITextFieldDelegate, UISearchBarDelegate>
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 - (IBAction)backToPlayer:(id)sender;
@@ -25,6 +25,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *popupprod;
 @property (weak, nonatomic) IBOutlet UIView *popup;
 @property (weak, nonatomic) IBOutlet UILabel *popupqte;
+@property (weak, nonatomic) IBOutlet UILabel *qteMinMax;
 
+@property (weak, nonatomic) IBOutlet UISegmentedControl *selType;
+@property (weak, nonatomic) IBOutlet UISearchBar *mchbar;
 
 @end

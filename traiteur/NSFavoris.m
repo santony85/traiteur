@@ -9,5 +9,5 @@
 #import "NSFavoris.h"
 
 @implementation NSFavoris
-@synthesize idFav,tDesc,tFam,tPrix,tTyp;
+@synthesize idFav,tDesc,tFam,tPrix,tTyp,tGencode,tId,tMin,tMax,tRes,tPval;
 @end

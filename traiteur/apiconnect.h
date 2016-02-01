@@ -35,4 +35,7 @@
 -(int)delUnit :(NSString *)collection :(NSString *)champ :(NSString *)val;
 -(NSString *)updateUnit :(NSString *)collection :(NSDictionary *)data :(NSString *)mid;
 
+-(NSMutableArray *)NewgetList:(NSString *)collection :(NSString *)idp;
+-(NSMutableArray *)getPrint:(NSString *)collection :(NSString *)idname :(NSString *)page :(NSString *)cat;
+
 @end

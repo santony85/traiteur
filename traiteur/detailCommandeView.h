@@ -11,9 +11,12 @@
 #import "NSClient.h"
 #import "APRoundedButton.h"
 
-@interface detailCommandeView : UIViewController<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate>
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@interface detailCommandeView : UIViewController<UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate,UISearchBarDelegate>
 
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) IBOutlet UITableView *tableViewHC;
+
+@property (strong, nonatomic) IBOutlet UISearchBar *mchbar;
 
 @property (strong, nonatomic) NSCommande *commande;
 @property (strong, nonatomic) NSClient *client;
@@ -38,8 +41,10 @@
 @property (weak, nonatomic) IBOutlet UITextField *prixhc;
 
 @property (weak, nonatomic) IBOutlet APRoundedButton *btNext;
+- (IBAction)addHc:(id)sender;
 
-
+@property (strong, nonatomic) IBOutlet UILabel *pht;
+@property (strong, nonatomic) IBOutlet UILabel *ptva;
 
 
 
@@ -50,4 +55,22 @@
 - (IBAction)modRem:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *hdRemise;
 @property (weak, nonatomic) IBOutlet UILabel *hdSommeRemise;
+- (IBAction)endAppli:(id)sender;
+
+
+@property (weak, nonatomic) IBOutlet UIView *popup;
+
+@property (weak, nonatomic) IBOutlet UILabel *popupqte;
+@property (weak, nonatomic) IBOutlet UILabel *popupprod;
+@property (weak, nonatomic) IBOutlet UILabel *popupprodc;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *typeProdQte;
+
+@property (weak, nonatomic) IBOutlet UIImageView *imgPrnt;
+@property (weak, nonatomic) IBOutlet UIImageView *imgSup;
+@property (weak, nonatomic) IBOutlet UIImageView *imgLiv;
+@property (weak, nonatomic) IBOutlet UIButton *btImp;
+@property (weak, nonatomic) IBOutlet UIButton *btSup;
+@property (weak, nonatomic) IBOutlet UIButton *btLiv;
+
+
 @end
