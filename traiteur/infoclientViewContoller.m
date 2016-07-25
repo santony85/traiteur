@@ -35,49 +35,74 @@
     
 }
 
-
-
-
-
-
-
 - (void)viewDidLoad
-  {
-  [super viewDidLoad];
-      
-      heures  = [[NSArray alloc]         initWithObjects:@"09",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17",@"18",@"19",@"20",@"21" , nil];
+{
+    [super viewDidLoad];
+    
+    heures  = [[NSArray alloc]         initWithObjects:@"09",@"10",@"11",@"12",@"13",@"14",@"15",@"16",@"17",@"18",@"19",@"20",@"21" , nil];
     
     minutes  = [[NSArray alloc]         initWithObjects:@"00",@"15",@"30",@"45", nil];
-
+    
     sqlManager = [[dataBase alloc] initDatabase:0];
     readlst = [[NSArray alloc] init];
-
-
-      isDateTime=0;
-      idClientSel   = @"";
-      idCommandeSel = @"";
-      modeRecherche = 0;
-      isInternet=0;
-      internet=@"";
-      
-      [self becomeFirstResponder];
-      [_nom becomeFirstResponder];
-      [_nom addTarget:self action:@selector(updateLabelUsingContentsOfTextField:) forControlEvents:UIControlEventEditingChanged];
-      
-      //self.datePicker = [[UIDatePicker alloc] init];
-      //self.datePicker.datePickerMode = UIDatePickerModeDate;
-      //[self.datePicker addTarget:self action:@selector(datePickerValueChanged:) forControlEvents:UIControlEventValueChanged];
-
-      NSDate *currentTime = [NSDate date];
-      [self.datePicker setMinimumDate:currentTime];
-       //self.datePicker.minuteInterval = 30;
-
-      
-      self.datePicker.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
-      self.timePicker.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
-      self.dtPicker.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
     
-      [self.view endEditing:YES];
+    
+    isDateTime=0;
+    idClientSel   = @"";
+    idCommandeSel = @"";
+    modeRecherche = 0;
+    isInternet=0;
+    internet=@"";
+    
+    [self becomeFirstResponder];
+    [_nom becomeFirstResponder];
+    [_nom addTarget:self action:@selector(updateLabelUsingContentsOfTextField:) forControlEvents:UIControlEventEditingChanged];
+    
+    //self.datePicker = [[UIDatePicker alloc] init];
+    //self.datePicker.datePickerMode = UIDatePickerModeDate;
+    //[self.datePicker addTarget:self action:@selector(datePickerValueChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    NSDate *currentTime = [NSDate date];
+    [self.datePicker setMinimumDate:currentTime];
+    //self.datePicker.minuteInterval = 30;
+    
+    
+    self.datePicker.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
+    self.timePicker.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
+    self.dtPicker.transform = CGAffineTransformScale(CGAffineTransformIdentity, 2, 2);
+    
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithHex:@"#006eb8" alpha:1]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:@"#006eb8" alpha:1]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    
+    _formView.layer.borderWidth = 2;
+    _formView.layer.borderColor = [UIColor colorWithHex:@"#ff8000" alpha:1].CGColor;
+    
+    CGRect frameRect = _nom.frame;
+    frameRect.size.height = 35;
+    _nom.frame = frameRect;
+    
+    frameRect = _prenom.frame;
+    frameRect.size.height = 35;
+    _prenom.frame = frameRect;
+    
+    frameRect = _nbPersonne.frame;
+    frameRect.size.height = 35;
+    _nbPersonne.frame = frameRect;
+    
+    frameRect = _tel.frame;
+    frameRect.size.height = 35;
+    _tel.frame = frameRect;
+    
+    frameRect = _dateprepa.frame;
+    frameRect.size.height = 35;
+    _dateprepa.frame = frameRect;
+    
+    frameRect = _heureprepa.frame;
+    frameRect.size.height = 35;
+    _heureprepa.frame = frameRect;
+    
+    [self.view endEditing:YES];
 }
 
 -(NSMutableArray *)setListTmpCli :(NSMutableArray *)impList{
@@ -99,12 +124,13 @@
     
     return tmplst;
 }
+
 -(NSMutableArray *)setListTmpCom :(NSMutableArray *)impList{
     NSMutableArray * tmplst = [[NSMutableArray alloc] init];
     for(int i=0;i<[impList count];i++){
         
         NSCommande *commande = [[NSCommande alloc] init];
-
+        
         commande.numcommande = [[readlst objectAtIndex:i] objectForKey:@"numcommande"];
         commande.datecommande = [[readlst objectAtIndex:i] objectForKey:@"datecommande"];
         commande.dateliv = [[readlst objectAtIndex:i] objectForKey:@"dateliv"];
@@ -121,25 +147,23 @@
     
     return tmplst;
 }
+
 -(NSMutableArray *)setListTmpLigneCom :(NSMutableArray *)impList{
     NSMutableArray * tmplst = [[NSMutableArray alloc] init];
     for(int i=0;i<[impList count];i++){
         
         NSLigneCommande *lcom = [[NSLigneCommande alloc] init];
-
+        
         lcom.commentaire = [[readlst objectAtIndex:i] objectForKey:@"commentaire"];
         lcom.idcommande  = [[readlst objectAtIndex:i] objectForKey:@"idcommande"];
         lcom.idproduit   = [[readlst objectAtIndex:i] objectForKey:@"idproduit"];
         lcom.qte         = [[readlst objectAtIndex:i] objectForKey:@"qte"];
         [tmplst addObject:lcom];
-
+        
     }
     
     return tmplst;
 }
-
-
-
 
 NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSString *filter){
     NSUInteger onOriginal = 0, onFilter = 0, onOutput = 0;
@@ -184,10 +208,8 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     return [NSString stringWithUTF8String:outputString];
 }
 
-
-
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
-  if (textField == _tel){
+    if (textField == _tel){
         NSString *filter = @"##.##.##.##.##";
         if(!filter) return YES; // No filter provided, allow anything
         NSString *changedString = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -215,49 +237,49 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         return NO;
         
     }
-  /*else if (textField == _nom){
-      
-          readlst = [sqlManager findClient:textField.text];
-          if([readlst count]>0){
-              //afflist gauche
-              [self affListClient:readlst];
-          }
-      else  [self cacheList];
-          return YES;
-          
-      }*/
-  else if (textField == _recnumcommande){
-      NSString *filter = @"######";
-      if(!filter) return YES; // No filter provided, allow anything
-      NSString *changedString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-      if(range.length == 1 && // Only do for single deletes
-         string.length < range.length &&
-         [[textField.text substringWithRange:range] rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]].location == NSNotFound)
-      {
-          // Something was deleted.  Delete past the previous number
-          NSInteger location = changedString.length-1;
-          if(location > 0)
-          {
-              for(; location > 0; location--)
-              {
-                  if(isdigit([changedString characterAtIndex:location]))
-                  {
-                      break;
-                  }
-              }
-              changedString = [changedString substringToIndex:location];
-          }
-      }
-      
-      textField.text = filteredPhoneStringFromStringWithFilter(changedString, filter);
-      if([changedString length]>1){
-          _btreccomm.alpha =1.0f;
-          _btreccomm.enabled = YES;
-      }
-      return NO;
-      
-  }
-  else if (textField == _dateprepa){
+    /*else if (textField == _nom){
+     
+     readlst = [sqlManager findClient:textField.text];
+     if([readlst count]>0){
+     //afflist gauche
+     [self affListClient:readlst];
+     }
+     else  [self cacheList];
+     return YES;
+     
+     }*/
+    else if (textField == _recnumcommande){
+        NSString *filter = @"######";
+        if(!filter) return YES; // No filter provided, allow anything
+        NSString *changedString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        if(range.length == 1 && // Only do for single deletes
+           string.length < range.length &&
+           [[textField.text substringWithRange:range] rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]].location == NSNotFound)
+        {
+            // Something was deleted.  Delete past the previous number
+            NSInteger location = changedString.length-1;
+            if(location > 0)
+            {
+                for(; location > 0; location--)
+                {
+                    if(isdigit([changedString characterAtIndex:location]))
+                    {
+                        break;
+                    }
+                }
+                changedString = [changedString substringToIndex:location];
+            }
+        }
+        
+        textField.text = filteredPhoneStringFromStringWithFilter(changedString, filter);
+        if([changedString length]>1){
+            _btreccomm.alpha =1.0f;
+            _btreccomm.enabled = YES;
+        }
+        return NO;
+        
+    }
+    else if (textField == _dateprepa){
         NSString *filter = @"##/##/####";
         if(!filter) return YES; // No filter provided, allow anything
         NSString *changedString = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -279,14 +301,14 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
                 changedString = [changedString substringToIndex:location];
             }
         }
-      
-      if(textField.text.length >=10)NSLog(@"Check Date");
+        
+        if(textField.text.length >=10)NSLog(@"Check Date");
         textField.text = filteredPhoneStringFromStringWithFilter(changedString, filter);
         
         return NO;
         
     }
-  else if (textField == _cp){
+    else if (textField == _cp){
         NSString *filter = @"#####";
         if(!filter) return YES; // No filter provided, allow anything
         NSString *changedString = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -314,7 +336,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         return NO;
         
     }
-  else if (textField == _heureprepa){
+    else if (textField == _heureprepa){
         NSString *filter = @"##h##";
         if(!filter) return YES; // No filter provided, allow anything
         NSString *changedString = [textField.text stringByReplacingCharactersInRange:range withString:string];
@@ -338,12 +360,12 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         }
         
         textField.text = filteredPhoneStringFromStringWithFilter(changedString, filter);
-
+        
         return NO;
         
     }
-  else return YES;
-  }
+    else return YES;
+}
 
 - (void)updateLabelUsingContentsOfTextField:(id)sender{
     
@@ -373,7 +395,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     [UIView beginAnimations:NULL context:NULL];
     [UIView setAnimationDuration:0.4];
     [UIView setAnimationDelegate:self];
-    [_formView setCenter:CGPointMake(513+90, 250)];
+    [_formView setCenter:CGPointMake(513+144, 216)];
     [_tableView setCenter:CGPointMake(148, 237)];
     [UIView commitAnimations];
 }
@@ -382,14 +404,13 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     [UIView beginAnimations:NULL context:NULL];
     [UIView setAnimationDuration:0.4];
     [UIView setAnimationDelegate:self];
-    [_formView setCenter:CGPointMake(513, 250)];
+    [_formView setCenter:CGPointMake(513, 216)];
     [_tableView setCenter:CGPointMake(-276, 237)];
     [UIView commitAnimations];
 }
 
-
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
-  {
+{
     if (textField == _dateprepa){
         //self.datePicker.datePickerMode = UIDatePickerModeDateAndTime;
         isDateTime=1;
@@ -406,18 +427,18 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     }
     else if (textField == _heureprepa){
         isDateTime=2;
-          //self.datePicker.datePickerMode = UIDatePickerModeTime;
-          [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
-          [UIView beginAnimations:NULL context:NULL];
-          [UIView setAnimationDuration:0.4];
-          [UIView setAnimationDelegate:self];
-          [_dateView setCenter:CGPointMake(512, 593)];
-          _timePicker.hidden = NO;
-          _datePicker.hidden = YES;
-          _dtPicker.hidden = YES;
-          [UIView commitAnimations];
-          return NO;
-      }
+        //self.datePicker.datePickerMode = UIDatePickerModeTime;
+        [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+        [UIView beginAnimations:NULL context:NULL];
+        [UIView setAnimationDuration:0.4];
+        [UIView setAnimationDelegate:self];
+        [_dateView setCenter:CGPointMake(512, 593)];
+        _timePicker.hidden = NO;
+        _datePicker.hidden = YES;
+        _dtPicker.hidden = YES;
+        [UIView commitAnimations];
+        return NO;
+    }
     else{
         isDateTime=0;
         [UIView beginAnimations:NULL context:NULL];
@@ -426,10 +447,9 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         [_dateView setCenter:CGPointMake(512, 1000)];
         [UIView commitAnimations];
     }
-      
+    
     return YES;
-  }
-
+}
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == _nom) {
@@ -443,37 +463,37 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         [_tel becomeFirstResponder];
     }
     
-   /* else if (textField == _cp) {
-        [_ville becomeFirstResponder];
-    }
-    else if (textField == _ville) {
-        [_tel becomeFirstResponder];
-    }*/
+    /* else if (textField == _cp) {
+     [_ville becomeFirstResponder];
+     }
+     else if (textField == _ville) {
+     [_tel becomeFirstResponder];
+     }*/
     else if (textField == _tel) {
-
-       // [_dateprepa becomeFirstResponder];
-       // [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+        
+        // [_dateprepa becomeFirstResponder];
+        // [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     }
     else if (textField == _dateprepa) {
         [_heureprepa becomeFirstResponder];
     }
     /*else if (textField == _heureprepa) {
-        [_nbPersonne becomeFirstResponder];
-    }*/
+     [_nbPersonne becomeFirstResponder];
+     }*/
     else{
         [textField resignFirstResponder];
         if(   (! [_nom.text isEqualToString:@""])
-            &&(! [_prenom.text isEqualToString:@""])
-            &&(! [_tel.text isEqualToString:@""])
-            &&(! [_dateprepa.text isEqualToString:@""])
-            &&(! [_heureprepa.text isEqualToString:@""])
+           &&(! [_prenom.text isEqualToString:@""])
+           &&(! [_tel.text isEqualToString:@""])
+           &&(! [_dateprepa.text isEqualToString:@""])
+           &&(! [_heureprepa.text isEqualToString:@""])
            ){
             
             _btNext.alpha =1.0f;
-        //alpha
+            //alpha
             _btNext.enabled =YES;
-        //enabled
-        
+            //enabled
+            
         }
         
         
@@ -483,6 +503,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     
     return YES;
 }
+
 - (IBAction)RechercheCommande:(id)sender {
     
 }
@@ -503,6 +524,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     
     return tmplst;
 }
+
 - (IBAction)affListProd:(id)sender {
     //create numero de commande
     NSDate *currentTime = [NSDate date];
@@ -532,21 +554,23 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     
     NSCommande *commande = [[NSCommande alloc] init];
     if([idCommandeSel isEqualToString:@""]){
-      commande.numcommande = numCom;
-      commande.datecommande = dateInStringFormated2;
-      commande.dateliv = _dateprepa.text;
-      commande.heureliv =_heureprepa.text;
-      commande.remise = @"0";
-      //commande.catalogue = catalogue;
-
-      commande.idclient = idClientSel;//[NSString stringWithFormat:@"%d",idClientSel];
-      //int nb = [sqlManager addCommande:commande];
-      commande.idcommande = @"";
-      
-      }
+        commande.numcommande = numCom;
+        commande.datecommande = dateInStringFormated2;
+        commande.dateliv = _dateprepa.text;
+        commande.heureliv    =_heureprepa.text;
+        commande.remise      = @"0";
+        commande.acompte     = @"0";
+        commande.commentaire = @"";
+        //commande.catalogue = catalogue;
+        
+        commande.idclient = idClientSel;//[NSString stringWithFormat:@"%d",idClientSel];
+        //int nb = [sqlManager addCommande:commande];
+        commande.idcommande = @"";
+        
+    }
     else {
         
-  
+        
         //commande = tmpcommande;
         apiconnect *connect = [[apiconnect alloc] init];
         NSArray *tmpcomm = [connect getSpec:@"commande" :@"_id" :idCommandeSel ];
@@ -565,6 +589,8 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         commande.idcommande = [[tmpcomm objectAtIndex:0] objectForKey:@"_id"];
         commande.status = [[tmpcomm objectAtIndex:0] objectForKey:@"status"];
         commande.remise = [[tmpcomm objectAtIndex:0] objectForKey:@"remise"];
+        commande.acompte = [[tmpcomm objectAtIndex:0] objectForKey:@"acompte"];
+        commande.commentaire = [[tmpcomm objectAtIndex:0] objectForKey:@"commentaire"];
         commande.vendeur = [[tmpcomm objectAtIndex:0] objectForKey:@"vendeur"];
         commande.catalogue = [[tmpcomm objectAtIndex:0] objectForKey:@"catalogue"];
         
@@ -576,7 +602,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         lstLigneCommande = [self setListTmpLigneCom:readlst];
         readlst = [connect getSpec:@"produithc" :@"idcommande" :commande.idcommande];
         lstLigneCommande = [self setListProdHC:readlst :lstLigneCommande];
-        }
+    }
     
     
     commande.internet = internet;
@@ -598,6 +624,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     
     [self.navigationController pushViewController:   dvc animated:YES];
 }
+
 - (IBAction)affListCommandesClient:(id)sender {
     
     apiconnect *connect = [[apiconnect alloc] init];
@@ -613,6 +640,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     }
     else  [self cacheList];
 }
+
 - (IBAction)delAll:(id)sender {
     _nom.text=@"";
     _prenom.text=@"";
@@ -641,7 +669,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 32)];
-    headerView.backgroundColor = [UIColor colorWithHex:@"#395771" alpha:1.0];
+    headerView.backgroundColor = [UIColor colorWithHex:@"#ff8000" alpha:1.0];
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, tableView.bounds.size.width - 10, 32)];
     NSString *sectionTitle;
     if(modeRecherche == 0)sectionTitle = @"Clients";
@@ -649,23 +677,27 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     label.text = sectionTitle;
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont boldSystemFontOfSize:14];
+    label.font = [UIFont fontWithName:@"SF-UI-Display-SemiBold" size:17];
     [headerView addSubview:label];
-  return headerView;
-  }
+    return headerView;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     // Return the number of sections.
     return 1;
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     
     
     return [readlst count];
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)indexPath{
     
     return 32.0;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     
@@ -677,10 +709,10 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     }
     
     if(modeRecherche == 0){
-      NSClient *tmpcli = [readlst objectAtIndex:indexPath.row];
-      cell.nom.text = [NSString stringWithFormat: @"%@ %@",tmpcli.nom,tmpcli.prenom];
-      cell.adresse.text = tmpcli.tel;
-      cell.cpville.text = @"";//[NSString stringWithFormat: @"%@ %@",tmpcli.,tmpcli.ville];
+        NSClient *tmpcli = [readlst objectAtIndex:indexPath.row];
+        cell.nom.text = [NSString stringWithFormat: @"%@ %@",tmpcli.nom,tmpcli.prenom];
+        cell.adresse.text = tmpcli.tel;
+        cell.cpville.text = @"";//[NSString stringWithFormat: @"%@ %@",tmpcli.,tmpcli.ville];
     }
     else if(modeRecherche == 1){
         NSCommande *tmpcli = [readlst objectAtIndex:indexPath.row];
@@ -690,22 +722,23 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     }
     return cell;
 }
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if(modeRecherche == 0){
-      NSClient *tmpcli = [readlst objectAtIndex:indexPath.row];
-      
-      _nom.text=tmpcli.nom;
-      _prenom.text=tmpcli.prenom;
-      //_adresse.text=tmpcli.adresse;
-      //_cp.text=tmpcli.cp;
-      //_ville.text=tmpcli.ville;
-      _tel.text=tmpcli.tel;
-      _nbPersonne.text = tmpcli.numcarte;
-      [self cacheList];
-      [_dateprepa becomeFirstResponder];
-      idClientSel = tmpcli.idclient;
-      _btrecherchecom.alpha = 1.0f;
-      _btrecherchecom.enabled = YES;
+        NSClient *tmpcli = [readlst objectAtIndex:indexPath.row];
+        
+        _nom.text=tmpcli.nom;
+        _prenom.text=tmpcli.prenom;
+        //_adresse.text=tmpcli.adresse;
+        //_cp.text=tmpcli.cp;
+        //_ville.text=tmpcli.ville;
+        _tel.text=tmpcli.tel;
+        _nbPersonne.text = tmpcli.numcarte;
+        [self cacheList];
+        [_dateprepa becomeFirstResponder];
+        idClientSel = tmpcli.idclient;
+        _btrecherchecom.alpha = 1.0f;
+        _btrecherchecom.enabled = YES;
     }
     else if(modeRecherche == 1){
         tmpcommande = [readlst objectAtIndex:indexPath.row];
@@ -717,9 +750,10 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         _btNext.alpha =1.0f;
         _btNext.enabled =YES;
         idCommandeSel = tmpcommande.idcommande;
-
+        
     }
 }
+
 - (IBAction)affRecComm:(id)sender {
     NSLog(@"%ld",[sender tag]);
     
@@ -732,6 +766,7 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     [_recnumcommande becomeFirstResponder];
     [UIView commitAnimations];
 }
+
 - (IBAction)hidereccomm:(id)sender {
     [UIView beginAnimations:NULL context:NULL];
     [UIView setAnimationDuration:0.4];
@@ -744,17 +779,18 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
     _recnumcommande.text = @"";
     
 }
+
 - (IBAction)ValidDate:(id)sender {
     if(isDateTime==1){
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; // here we create NSDateFormatter object for change the Format of date..
-    [dateFormatter setDateFormat:@"dd/MM/yyyy"];
-    NSString *convertedString = [dateFormatter stringFromDate:_dtPicker.date];
-     _dateprepa.text = [NSString stringWithFormat:@"%@", convertedString];
-    [_heureprepa becomeFirstResponder];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init]; // here we create NSDateFormatter object for change the Format of date..
+        [dateFormatter setDateFormat:@"dd/MM/yyyy"];
+        NSString *convertedString = [dateFormatter stringFromDate:_dtPicker.date];
+        _dateprepa.text = [NSString stringWithFormat:@"%@", convertedString];
+        [_heureprepa becomeFirstResponder];
     }
     else if(isDateTime==2){
-      NSInteger hour = [_timePicker selectedRowInComponent:0];
-      NSInteger minute = [_timePicker selectedRowInComponent:1];
+        NSInteger hour = [_timePicker selectedRowInComponent:0];
+        NSInteger minute = [_timePicker selectedRowInComponent:1];
         NSString *convertedString = [NSString stringWithFormat:@"%@h%@",[heures objectAtIndex:hour],[minutes objectAtIndex:minute]];
         _heureprepa.text =convertedString;
     }
@@ -776,70 +812,70 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         [_dateView setCenter:CGPointMake(512, 1000)];
         [UIView commitAnimations];
     }
-
+    
 }
 
 - (IBAction)recherchecommandenum:(id)sender {
     
     if(isInternet==0){
         
-    
-    
-    NSLog(@"%@",_recnumcommande.text);
-    apiconnect *connect = [[apiconnect alloc] init];
-    //save client
-    NSString *numCom = [NSString stringWithFormat: @"%.4d",[_recnumcommande.text intValue] ];
-    NSArray *tmpcomm = [connect getSpecIdc:@"commande" :@"numcommande" :numCom];
-   //NSArray *tmpcomm = [sqlManager findCommande:[NSString stringWithFormat:@"%@",_recnumcommande.text]:1];
-   if([tmpcomm count]>0){
-       tmpcommande = [tmpcomm objectAtIndex:0];
-       NSLog(@"%@",[[tmpcomm objectAtIndex:0] objectForKey:@"idclient"]);
-       NSArray *tcli = [connect getSpec:@"client" :@"_id" :[[tmpcomm objectAtIndex:0] objectForKey:@"idclient"]];
-       //NSArray *tcli = [sqlManager findClient:tmpcommande.idclient:1];
-       NSClient *tmpcli = [tcli objectAtIndex:0];
-       _nom.text=[[tcli objectAtIndex:0] objectForKey:@"nom"];
-       _prenom.text=[[tcli objectAtIndex:0] objectForKey:@"prenom"];
-       
-       //_adresse.text=tmpcli.adresse;
-       //_cp.text=tmpcli.cp;
-       //_ville.text=tmpcli.ville;
-       
-       _tel.text=[[tcli objectAtIndex:0] objectForKey:@"tel"];
-       
-       _dateprepa.text = [[tmpcomm objectAtIndex:0] objectForKey:@"dateliv"];
-       _heureprepa.text= [[tmpcomm objectAtIndex:0] objectForKey:@"heureliv"];
-       
-       _nbPersonne.text = [[tcli objectAtIndex:0] objectForKey:@"email"];
-       
-       idCommandeSel = [[tmpcomm objectAtIndex:0] objectForKey:@"_id"];
-       idClientSel   = [[tmpcomm objectAtIndex:0] objectForKey:@"idclient"];
-       
-       
-       
-      // tmpcommande = [readlst objectAtIndex:0];
-       //_dateprepa.text = tmpcommande.dateliv;
-       //_heureprepa.text=tmpcommande.heureliv;
-       
-       [self cacheList];
-       //_btNext.alpha =1.0f;
-       //_btNext.enabled =YES;
-       //idCommandeSel = [tmpcommande.idcommande intValue];
-       
-       
-       [self.view endEditing:YES];
-       _btNext.alpha =1.0f;
-       _btNext.enabled =YES;
-       
+        
+        
+        NSLog(@"%@",_recnumcommande.text);
+        apiconnect *connect = [[apiconnect alloc] init];
+        //save client
+        NSString *numCom = [NSString stringWithFormat: @"%.4d",[_recnumcommande.text intValue] ];
+        NSArray *tmpcomm = [connect getSpecIdc:@"commande" :@"numcommande" :numCom];
+        //NSArray *tmpcomm = [sqlManager findCommande:[NSString stringWithFormat:@"%@",_recnumcommande.text]:1];
+        if([tmpcomm count]>0){
+            tmpcommande = [tmpcomm objectAtIndex:0];
+            NSLog(@"%@",[[tmpcomm objectAtIndex:0] objectForKey:@"idclient"]);
+            NSArray *tcli = [connect getSpec:@"client" :@"_id" :[[tmpcomm objectAtIndex:0] objectForKey:@"idclient"]];
+            //NSArray *tcli = [sqlManager findClient:tmpcommande.idclient:1];
+            NSClient *tmpcli = [tcli objectAtIndex:0];
+            _nom.text=[[tcli objectAtIndex:0] objectForKey:@"nom"];
+            _prenom.text=[[tcli objectAtIndex:0] objectForKey:@"prenom"];
+            
+            //_adresse.text=tmpcli.adresse;
+            //_cp.text=tmpcli.cp;
+            //_ville.text=tmpcli.ville;
+            
+            _tel.text=[[tcli objectAtIndex:0] objectForKey:@"tel"];
+            
+            _dateprepa.text = [[tmpcomm objectAtIndex:0] objectForKey:@"dateliv"];
+            _heureprepa.text= [[tmpcomm objectAtIndex:0] objectForKey:@"heureliv"];
+            
+            _nbPersonne.text = [[tcli objectAtIndex:0] objectForKey:@"email"];
+            
+            idCommandeSel = [[tmpcomm objectAtIndex:0] objectForKey:@"_id"];
+            idClientSel   = [[tmpcomm objectAtIndex:0] objectForKey:@"idclient"];
+            
+            
+            
+            // tmpcommande = [readlst objectAtIndex:0];
+            //_dateprepa.text = tmpcommande.dateliv;
+            //_heureprepa.text=tmpcommande.heureliv;
+            
+            [self cacheList];
+            //_btNext.alpha =1.0f;
+            //_btNext.enabled =YES;
+            //idCommandeSel = [tmpcommande.idcommande intValue];
+            
+            
+            [self.view endEditing:YES];
+            _btNext.alpha =1.0f;
+            _btNext.enabled =YES;
+            
+        }
+        else{
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Attention"
+                                                            message: @"La commande n'existe pas !" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            
+        }
+        [self hidereccomm:nil];
+        [self.view endEditing:YES];
     }
-   else{
-       UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Attention"
-                                                       message: @"La commande n'existe pas !" delegate: nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-       [alert show];
-
-   }
-  [self hidereccomm:nil];
-  [self.view endEditing:YES];
-  }
     
     /// commande internet
     else{
@@ -866,8 +902,8 @@ NSMutableString *filteredPhoneStringFromStringWithFilter(NSString *string, NSStr
         return heures.count;
     }
     else {
-
-     return minutes.count;
+        
+        return minutes.count;
     }
     
 }

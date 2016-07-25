@@ -35,10 +35,13 @@
 - (IBAction)saveCommande:(id)sender;
 @property (weak, nonatomic) IBOutlet UIView *hsProdView;
 - (IBAction)closePopup:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *btComment;
 @property (weak, nonatomic) IBOutlet UITextField *deshc;
 @property (weak, nonatomic) IBOutlet UITextField *commhc;
 @property (weak, nonatomic) IBOutlet UITextField *qtehc;
 @property (weak, nonatomic) IBOutlet UITextField *prixhc;
+
+@property (weak, nonatomic) IBOutlet UILabel *hdacompte;
 
 @property (weak, nonatomic) IBOutlet APRoundedButton *btNext;
 - (IBAction)addHc:(id)sender;
@@ -53,6 +56,7 @@
 - (IBAction)modQte:(id)sender;
 - (IBAction)modCom:(id)sender;
 - (IBAction)modRem:(id)sender;
+- (IBAction)modComGen:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *hdRemise;
 @property (weak, nonatomic) IBOutlet UILabel *hdSommeRemise;
 - (IBAction)endAppli:(id)sender;

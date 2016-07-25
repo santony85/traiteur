@@ -12,6 +12,7 @@
 #import "GlobalV.h"
 #import "UYLGenericPrintPageRenderer.h"
 #import "MyPrintPageRenderer.h"
+#import "UIColor+CreateMethods.h"
 
 @interface pdfGeneratorView (){
 
@@ -34,13 +35,17 @@
     connect = [[apiconnect alloc] init];
     
     NSLog(@"%@",_commande.idcommande);
-    readlst  = [connect getPrint :_commande.idcommande :idMagasin :@"bdcu" :catalogue];
+    readlst  = [connect getPrint :_commande.idcommande :idMagasin :_typeb :catalogue];
     NSLog(@"%@",readlst);
     //getPrint:(NSString *)collection :(NSString *)idname;
     //readlst = [connect getPrint:@"lignecommande" :@"idcommande" :commande.idcommande];
        // Create and open pdf file
     //[self createPDFFile];
     //[self loadPDFFile];
+    
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithHex:@"#006eb8" alpha:1]];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithHex:@"#006eb8" alpha:1]];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
    
 
     NSString *urlString =  [NSString stringWithFormat:@"http://be-instore.fr/upload/pdf/%@.pdf",_commande.idcommande];

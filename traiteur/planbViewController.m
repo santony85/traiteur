@@ -18,6 +18,8 @@
 #import "apiconnect.h"
 #import "NSProduithc.h"
 
+#import "zoomViewController.h"
+
 
 @interface planbViewController (){
     NSMutableDictionary *produits;
@@ -84,6 +86,22 @@
     NSString *dep =@"";
     
     NSMutableArray *hd = [sqlManager findHeader];
+   /* NSMutableArray *hd = [NSMutableArray array];
+    [hd addObject:@"APERITIFS"];
+    [hd addObject:@"BUFFETS"];
+    [hd addObject:@"COCKTAIL DINATOIRE"];
+    [hd addObject:@"PLATEAUX REPAS"];
+    
+    [hd addObject:@"MENUS"];
+    [hd addObject:@"PLATEAUX FDM"];
+    
+    [hd addObject:@"ENTREES"];
+    [hd addObject:@"PLATS PREPARES"];
+    
+    [hd addObject:@"ROTISSERIE"];
+    [hd addObject:@"FROMAGES"];
+    [hd addObject:@"BOULANGERIE"];
+    [hd addObject:@"PATISSERIES"];*/
     
     dep = [hd objectAtIndex: 0];
     
@@ -155,19 +173,22 @@
     NSString *animal = [sectionAnimals objectAtIndex:indexPath.row];
     cell.titre.text = animal;
     
+
+    
     return cell;
 }
 
 
 - (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, 32)];
-    headerView.backgroundColor = [UIColor colorWithHex:@"#1273B7" alpha:1.0];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, tableView.bounds.size.width - 10, 32)];
+    headerView.backgroundColor = [UIColor colorWithHex:@"#ff8000" alpha:1.0];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(13, 0, tableView.bounds.size.width - 10, 32)];
     NSString *sectionTitle = [produitsSectionTitles objectAtIndex:section];
     label.text = sectionTitle;
     label.textColor = [UIColor whiteColor];
     label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont boldSystemFontOfSize:14];
+    //label.font = [UIFont boldSystemFontOfSize:14];
+    label.font = [UIFont fontWithName:@"SF-UI-Text-SemiBold" size:17];
     [headerView addSubview:label];
     return headerView;
 }
@@ -232,9 +253,21 @@
     cell.desc.text = [NSString stringWithFormat:@"%@", fav.tDesc];//fav.tDesc;
     
     
-    cell.prix.text = [NSString stringWithFormat: @"%.2f €",[fav.tPrix floatValue]];
+    cell.prix.text = [NSString stringWithFormat: @"%.2f€",[fav.tPrix floatValue]];
+    
+    
     cell.qte.text=@"";
+    
+    for(int i=0;i<[_lstLigneCommande count];i++){
+      NSLigneCommande *lcom = [_lstLigneCommande objectAtIndex:i];
+        if([lcom.idproduit isEqualToString:fav.tId])cell.qte.text=lcom.qte;
+    }
+    
+    
     cell.qte.tag=indexPath.row;
+    
+    
+    
     
     cell.fav = fav;
     
@@ -248,8 +281,67 @@
     cell.imgProd.image = [self loadImage:[NSString stringWithFormat:@"%@",fav.tId] ofType:@"jpg" inDirectory:documentsDirectoryPath];
     //cell.addBt.enabled = NO;
     // Configure the cell...
+    cell.imgProd.tag = indexPath.row;//[fav.idFav intValue];
+ 
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(onImageViewClicked:)];
+
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.numberOfTouchesRequired = 1;
+    [cell.imgProd addGestureRecognizer:singleTap];
+    [cell.imgProd setUserInteractionEnabled:YES];
     
     return cell;
+}
+
+
+-(void)onImageViewClickedX:(id)sender{
+    [UIView beginAnimations:NULL context:NULL];
+    [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDelegate:self];
+    [_zoomview setAlpha:0.0];
+    [UIView commitAnimations];
+    
+    
+    
+}
+
+-(void)onImageViewClicked:(id)sender {
+    
+    NSFavoris * fav = [readlst objectAtIndex:((UIGestureRecognizer *)sender).view.tag];
+   NSString * documentsDirectoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    _zoomimg.image = [self loadImage:[NSString stringWithFormat:@"%@",fav.tId] ofType:@"jpg" inDirectory:documentsDirectoryPath];
+    
+    
+    /*UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(onImageViewClickedX:)];
+    
+    singleTap.numberOfTapsRequired = 1;
+    singleTap.numberOfTouchesRequired = 1;
+    [_zoomimg addGestureRecognizer:singleTap];
+    [_zoomimg setUserInteractionEnabled:YES];
+    
+    
+    NSLog(@"clicked %ld", [fav.idFav intValue]);
+    //NSString *imgName = [meimg image].accessibilityIdentifier;
+    //NSLog(@"%@",imgName);
+    
+    /*[UIView beginAnimations:NULL context:NULL];
+    [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDelegate:self];
+    [_zoomview setAlpha:1.0];
+    [UIView commitAnimations];*/
+    
+    
+    
+    zoomViewController *dvc = [self.storyboard instantiateViewControllerWithIdentifier:@"zoomViewController"];
+    [self presentModalViewController:dvc animated:YES];
+    
+    
+    [dvc affImg:fav.tId];
+    
+    
+    
 }
 
 

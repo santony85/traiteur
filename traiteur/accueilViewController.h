@@ -32,5 +32,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *nbUpdFiles;
 @property (weak, nonatomic) IBOutlet UILabel *nommag;
 @property (weak, nonatomic) IBOutlet UILabel *nomcata;
+@property (weak, nonatomic) IBOutlet UIView *configView;
+- (IBAction)hideConfig:(id)sender;
 
 @end

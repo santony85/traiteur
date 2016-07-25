@@ -14,7 +14,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *desc;
 @property (strong, nonatomic) IBOutlet UILabel *pu;
 @property (strong, nonatomic) IBOutlet UILabel *ptot;
-@property (strong, nonatomic) IBOutlet APRoundedButton *delBut;
+@property (strong, nonatomic) IBOutlet UIButton *delBut;
 @property (strong, nonatomic) IBOutlet UILabel *commentaire;
 @property (weak, nonatomic) IBOutlet UIButton *btQte;
 @property (weak, nonatomic) IBOutlet UIButton *btCom;

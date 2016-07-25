@@ -16,12 +16,17 @@
 #import "NSProduithc.h"
 #import "prodhccell.h"
 #import "GlobalV.h"
+#import "UIColor+CreateMethods.h"
 
 #import "videoViewController.h"
 #import "accueilViewController.h"
+#import "prohcView.h"
+
+#import "Popup.h"
 
 
-@interface detailCommandeView ()<MLAlertViewDelegate>{
+
+@interface detailCommandeView ()<MLAlertViewDelegate,PopupDelegate>{
     NSArray *headerTxt;
     dataBase *sqlManager;
     NSMutableArray *readlst;
@@ -33,6 +38,16 @@
     int isNewProdUp;
     NSMutableArray *initial;
     NSArray  * typrodhc;
+    
+    PopupBackGroundBlurType blurType;
+    PopupIncomingTransitionType incomingType;
+    PopupOutgoingTransitionType outgoingType;
+    
+    Popup *popper;
+    
+    NSArray *phcArray;
+    NSMutableArray *prodhclst;
+    
 }
 
 
@@ -62,8 +77,7 @@
     
     typrodhc = [NSArray arrayWithObjects:@"Pieces",@"Kg",@"Tranches",@"Morceaux",nil];
     
-    _hdNom.text     = _client.nom;
-    _hdPrenom.text  = _client.prenom;
+    _hdNom.text     = [NSString stringWithFormat:@"%@ %@",_client.nom,_client.prenom];
     
     
     if([_commande.internet isEqualToString:@""]){
@@ -81,6 +95,8 @@
     _hdTel.text = _client.tel;
     _hdEmail.text = _client.numcarte;
     
+    _hdacompte.text = [NSString stringWithFormat:@"%d %@",[_commande.acompte integerValue],@" €"];
+    
     _dateL.text = _commande.dateliv;
     _heureL.text = _commande.heureliv;
     _hdRemise.text = [NSString stringWithFormat:@"%d %@",[_commande.remise integerValue],@"%"];
@@ -93,7 +109,13 @@
     tmpTag =0;
     
     
+    _btComment.layer.borderWidth = 1
+    ;
+    _btComment.layer.borderColor = [UIColor colorWithHex:@"#ff8000" alpha:1].CGColor;
     
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Commande traiteur" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     
     self.tableView.tag =0;
@@ -103,8 +125,11 @@
     
     UIBarButtonItem *spacedButton = [[UIBarButtonItem alloc] initWithTitle:(@"     ") style:UIBarButtonItemStyleBordered target:self action:nil];
     
-    //UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:(@"  Nouveau produit ") style:UIBarButtonItemStyleBordered target:self action:@selector(newHsProd:)];
-    //self.navigationItem.rightBarButtonItems = @[addAttachButton,spacedButton,sendButton];
+    UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithTitle:(@" Acompte ") style:UIBarButtonItemStyleBordered target:self action:@selector(modAcompte:)];
+    
+    UIBarButtonItem *prodButton = [[UIBarButtonItem alloc] initWithTitle:(@" Produit ") style:UIBarButtonItemStyleBordered target:self action:@selector(newHsProd:)];
+    
+    self.navigationItem.rightBarButtonItems = @[addAttachButton,spacedButton,sendButton,spacedButton,prodButton];
     
     //self.navigationItem.rightBarButtonItems = @[addAttachButton,spacedButton];
     [self getData];
@@ -163,7 +188,19 @@
                 //NSFavoris *fav = [lfav objectAtIndex:0];
             }
         }
+        else{
+           NSProduithc *ln = [_lstLigneCommande objectAtIndex:i];
+            
+           ttb+= [ln.qte floatValue]*[ln.prix floatValue];
+        }
+        
+        
+        
     }
+    
+    
+    
+    
     
     float tmpRem = ttb * [_commande.remise floatValue]/100.0;
     ttt = ttb-tmpRem;
@@ -226,7 +263,7 @@
             cell.desc.text = ln.designation;
             cell.pu.text = [NSString stringWithFormat: @"%.2f €",[ln.prix floatValue]];
             cell.commentaire.text = ln.commentaire;
-            cell.ptot.text = @"0.00 €";
+            cell.ptot.text = [NSString stringWithFormat: @"%.2f €",[ln.prix floatValue]*[ln.qte floatValue]];
             /* float pptot = [ln.qte intValue] * [ln.prix  floatValue];
              prixTotalTTC += pptot;
              tmpRem = prixTotalTTC * [_commande.remise floatValue]/100.0;
@@ -355,10 +392,15 @@
         [dict setObject:_commande.dateliv forKey:@"dateliv"];
         [dict setObject:_commande.heureliv forKey:@"heureliv"];
         [dict setObject:_commande.remise forKey:@"remise"];
+        [dict setObject:_commande.acompte forKey:@"acompte"];
+        [dict setObject:_commande.commentaire forKey:@"commentaire"];
         [dict setObject:@"en cours" forKey:@"status"];
         [dict setObject:_commande.vendeur forKey:@"vendeur"];
         [dict setObject:catalogue forKey:@"catalogue"];
         [dict setObject:_commande.internet forKey:@"internet"];
+        
+        //[dict setObject:@"20.00" forKey:@"accompte"];
+        
         _commande.idcommande=[connect postUnit :@"commande" :dict];
     }
     else{
@@ -369,10 +411,15 @@
         [dict setObject:_commande.dateliv forKey:@"dateliv"];
         [dict setObject:_commande.heureliv forKey:@"heureliv"];
         [dict setObject:_commande.remise forKey:@"remise"];
+        [dict setObject:_commande.acompte forKey:@"acompte"];
+        [dict setObject:_commande.commentaire forKey:@"commentaire"];
         [dict setObject:@"en cours" forKey:@"status"];
         [dict setObject:_commande.vendeur forKey:@"vendeur"];
         [dict setObject:_commande.idcommande forKey:@"idcommande"];
         [dict setObject:_commande.internet forKey:@"internet"];
+        
+        //[dict setObject:@"20.00" forKey:@"accompte"];
+        
         [connect updateUnit:@"commande" :dict :_commande.idcommande];
         
     }
@@ -402,6 +449,10 @@
             [dict setObject:ln.qte forKey:@"qte"];
             [dict setObject:ln.commentaire forKey:@"commentaire"];
             [dict setObject:ln.prix forKey:@"prix"];
+            [dict setObject:ln.total forKey:@"total"];
+            
+            [dict setObject:catalogue forKey:@"rayon"];
+            [dict setObject:catalogue forKey:@"prepa"];
             
             //[dict setObject:ln.ref forKey:@"ref"];
             //[dict setObject:ln.nom forKey:@"nom"];
@@ -465,8 +516,18 @@
             
            }
 
+
         }
-        
+        else if(iimode==5){
+            _commande.acompte = passwordTextField.text ;
+            _hdacompte.text = [NSString stringWithFormat:@"%ld %@",[_commande.acompte integerValue],@" €"];
+            
+        }
+        else if(iimode==6){
+            _commande.commentaire = passwordTextField.text ;
+            //_hdacompte.text = [NSString stringWithFormat:@"%ld %@",[_commande.acompte integerValue],@" €"];
+            
+        }
         [self.tableView reloadData];
         [self calculPrixTotal] ;
     }
@@ -496,7 +557,7 @@
 
 
 - (IBAction)livrerCommande:(id)sender{
-    apiconnect *connect = [[apiconnect alloc] init];
+    /*apiconnect *connect = [[apiconnect alloc] init];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc]initWithCapacity:7];
     [dict setObject:_client.idclient forKey:@"idclient"];
     [dict setObject:_commande.numcommande forKey:@"numcommande"];
@@ -504,8 +565,128 @@
     [dict setObject:_commande.dateliv forKey:@"dateliv"];
     [dict setObject:_commande.heureliv forKey:@"heureliv"];
     [dict setObject:_commande.remise forKey:@"remise"];
+    [dict setObject:_commande.acompte forKey:@"acompte"];
     [dict setObject:@"clos" forKey:@"status"];
-    [connect updateUnit:@"commande" :dict :_commande.idcommande];
+    [connect updateUnit:@"commande" :dict :_commande.idcommande];*/
+    
+    
+    
+    
+    apiconnect *connect = [[apiconnect alloc] init];
+    
+    NSString *numCom = [NSString stringWithFormat: @"%.4d",[sqlManager lastCommande]+1 ];
+    NSLog(@"%@",numCom);
+    
+    
+    
+    if([_client.idclient isEqualToString:@""]){
+        //save client
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc]initWithCapacity:7];
+        [dict setObject:_client.nom forKey:@"nom"];
+        [dict setObject:_client.prenom forKey:@"prenom"];
+        [dict setObject:idMagasin forKey:@"idmagasin"];
+        [dict setObject:catalogue forKey:@"catalogue"];
+        //[dict setObject:_client.cp forKey:@"cp"];
+        //[dict setObject:_client.ville forKey:@"ville"];
+        [dict setObject:_client.tel forKey:@"tel"];
+        [dict setObject:_client.numcarte forKey:@"email"];
+        _client.idclient=[connect postUnit :@"client" :dict];
+    }
+    NSLog(@"%@",_client.idclient);
+    if([_commande.idcommande isEqualToString:@""]){
+        //save commande
+        _commande.numcommande = numCom;
+        
+        if([_commande.internet isEqualToString:@""]){
+            _hdAdresse.text = _commande.numcommande;
+        }
+        else{
+            _hdAdresse.text = [NSString stringWithFormat:@"%@ / %@",_commande.numcommande,_commande.internet];
+        }
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc]initWithCapacity:7];
+        [dict setObject:idMagasin forKey:@"idmagasin"];
+        [dict setObject:_client.idclient forKey:@"idclient"];
+        [dict setObject:_commande.numcommande forKey:@"numcommande"];
+        [dict setObject:_commande.datecommande forKey:@"datecommande"];
+        [dict setObject:_commande.dateliv forKey:@"dateliv"];
+        [dict setObject:_commande.heureliv forKey:@"heureliv"];
+        [dict setObject:_commande.remise forKey:@"remise"];
+        [dict setObject:_commande.acompte forKey:@"acompte"];
+        [dict setObject:_commande.commentaire forKey:@"commentaire"];
+        [dict setObject:@"en cours" forKey:@"status"];
+        [dict setObject:_commande.vendeur forKey:@"vendeur"];
+        [dict setObject:catalogue forKey:@"catalogue"];
+        [dict setObject:_commande.internet forKey:@"internet"];
+        
+        //[dict setObject:@"20.00" forKey:@"accompte"];
+        
+        _commande.idcommande=[connect postUnit :@"devis" :dict];
+    }
+    else{
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc]initWithCapacity:7];
+        [dict setObject:_client.idclient forKey:@"idclient"];
+        [dict setObject:_commande.numcommande forKey:@"numcommande"];
+        [dict setObject:_commande.datecommande forKey:@"datecommande"];
+        [dict setObject:_commande.dateliv forKey:@"dateliv"];
+        [dict setObject:_commande.heureliv forKey:@"heureliv"];
+        [dict setObject:_commande.remise forKey:@"remise"];
+        [dict setObject:_commande.acompte forKey:@"acompte"];
+        [dict setObject:_commande.commentaire forKey:@"commentaire"];
+        [dict setObject:@"en cours" forKey:@"status"];
+        [dict setObject:_commande.vendeur forKey:@"vendeur"];
+        [dict setObject:_commande.idcommande forKey:@"idcommande"];
+        [dict setObject:_commande.internet forKey:@"internet"];
+        
+        //[dict setObject:@"20.00" forKey:@"accompte"];
+        
+        [connect updateUnit:@"devis" :dict :_commande.idcommande];
+        
+    }
+    //save ligne commane
+    NSLog(@"%@",_commande.idcommande);
+    
+    [connect delUnit:@"lignecommandedevis" :@"idcommande" :_commande.idcommande];
+    [connect delUnit:@"produithcdevis"     :@"idcommande" :_commande.idcommande];
+    
+    for(int i=0;i<[_lstLigneCommande count];i++){
+        
+        if ([[_lstLigneCommande objectAtIndex:i] isKindOfClass:[NSLigneCommande class]]){
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc]initWithCapacity:4];
+            NSLigneCommande *ln = [_lstLigneCommande objectAtIndex:i];
+            [dict setObject:_commande.idcommande forKey:@"idcommande"];
+            [dict setObject:ln.idproduit forKey:@"idproduit"];
+            //[dict setObject:ln.id forKey:@"id"];
+            [dict setObject:ln.qte forKey:@"qte"];
+            [dict setObject:ln.commentaire forKey:@"commentaire"];
+            [connect postUnit :@"lignecommandedevis" :dict];
+        }
+        else{
+            NSMutableDictionary *dict = [[NSMutableDictionary alloc]initWithCapacity:5];
+            NSProduithc *ln = [_lstLigneCommande objectAtIndex:i];
+            [dict setObject:_commande.idcommande forKey:@"idcommande"];
+            [dict setObject:ln.designation forKey:@"designation"];
+            [dict setObject:ln.qte forKey:@"qte"];
+            [dict setObject:ln.commentaire forKey:@"commentaire"];
+            [dict setObject:ln.prix forKey:@"prix"];
+            
+            //[dict setObject:ln.ref forKey:@"ref"];
+            //[dict setObject:ln.nom forKey:@"nom"];
+            
+            [connect postUnit :@"produithcdevis" :dict];
+        }
+    }
+
+    
+    //print devis//
+    
+    pdfGeneratorView *dvc = [self.storyboard instantiateViewControllerWithIdentifier:@"pdfGeneratorView"];
+    dvc.client = _client;
+    dvc.commande = _commande;
+    dvc.lstLigneCommande = _lstLigneCommande;
+    dvc.typeb = @"bddu";
+    [self presentModalViewController:dvc animated:YES];
+    
+    
 }
 
 
@@ -515,7 +696,9 @@
     dvc.client = _client;
     dvc.commande = _commande;
     dvc.lstLigneCommande = _lstLigneCommande;
+    dvc.typeb = @"bdcu";
     [self presentModalViewController:dvc animated:YES];
+    
     
     //[self.navigationController pushViewController:   dvc animated:YES];
     
@@ -578,6 +761,44 @@
     [alertView show];
 }
 
+- (IBAction)modAcompte:(id)sender {
+    iimode=5;
+    tmpTag = [sender tag];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Montant de l'acompte"
+                                                        message:[NSString stringWithFormat: @""]
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Ok", nil];
+    
+    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    passwordTextField = [alertView textFieldAtIndex:0];
+    [passwordTextField setKeyboardType:UIKeyboardTypeNumberPad];
+    //NSCommande *ln = [_commande objectAtIndex:[sender tag]];
+    passwordTextField.text = @"";
+    
+    [alertView show];
+}
+
+- (IBAction)modComGen:(id)sender {
+    iimode=6;
+    tmpTag = [sender tag];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Commentaire"
+                                                        message:[NSString stringWithFormat: @""]
+                                                       delegate:self
+                                              cancelButtonTitle:@"Cancel"
+                                              otherButtonTitles:@"Ok", nil];
+    
+    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    passwordTextField = [alertView textFieldAtIndex:0];
+    //[passwordTextField setKeyboardType:UIKeyboardTypeNumberPad];
+    //NSCommande *ln = [_commande objectAtIndex:[sender tag]];
+    passwordTextField.text = @"";
+    
+    [alertView show];
+}
+
+
+
 
 
 
@@ -599,6 +820,19 @@
     
 }
 
+
+- (void)dictionary:(NSMutableDictionary *)dictionary forpopup:(Popup *)popup stringsFromTextFields:(NSArray *)stringArray {
+    
+    NSLog(@"Dictionary from textfields: %@", dictionary);
+    NSLog(@"Array from textfields: %@", stringArray);
+    
+    
+    phcArray = [[NSMutableArray  alloc] init];
+    phcArray = stringArray;
+
+}
+
+
 -(void)hidePopUp{
     isNewProdUp =0;
     [self.tableView reloadData];
@@ -611,7 +845,67 @@
 }
 
 - (IBAction)newHsProd:(id)sender {
-    if(isNewProdUp==0)[self affPopUp];
+    
+    popper = [[Popup alloc] initWithTitle:@"Ajouter un produit" subTitle:@"" textFieldPlaceholders:@[@"Désignation", @"Prix unitaire", @"Quantité"] cancelTitle:@"Annuler" successTitle:@"Valider" cancelBlock:^{
+        NSLog(@"Cancel block 3");
+    } successBlock:^{
+        NSLog(@"Success block 3");
+        NSString *textFromBox1 = [phcArray objectAtIndex:0];
+        NSString *textFromBox2 = [phcArray objectAtIndex:1];
+        NSString *textFromBox3 = [phcArray objectAtIndex:2];
+        
+        NSProduithc *ln = [[NSProduithc alloc] init];
+        
+        NSInteger selectedIndex = [_typeProdQte selectedSegmentIndex];
+        
+        ln.designation = [NSString stringWithFormat:@"%@",textFromBox1];
+        ln.commentaire = @"";
+        ln.qte         = [NSString stringWithFormat:@"%@",textFromBox3];//_popupqte.text;
+        ln.prix        = [NSString stringWithFormat:@"%@",textFromBox2];
+        ln.idcommande  = _commande.idcommande;
+        float total = [ln.qte floatValue] * [ln.prix floatValue];
+        ln.total       = [NSString stringWithFormat:@"%.2f",total];
+        
+        
+        [_lstLigneCommande addObject:ln];
+        [self.tableView reloadData];
+        [self calculPrixTotal] ;
+        
+        
+        
+        
+        
+        
+        
+    }];
+    
+    
+    [popper setKeyboardTypeForTextFields:@[@"DEFAULT", @"NUMBERSANDPUNCTUATION", @"NUMBERSANDPUNCTUATION"]];
+    
+    [popper setDelegate:self];
+    [popper setBackgroundBlurType:blurType];
+    [popper setIncomingTransition:incomingType];
+    [popper setOutgoingTransition:outgoingType];
+    [popper setRoundedCorners:YES];
+    [popper showPopup];
+    
+    
+    //if(isNewProdUp==0)[self affPopUp];
+    
+    /*prohcView *dvc = [self.storyboard instantiateViewControllerWithIdentifier:@"prohcView"];
+    
+    dvc.didDismiss = ^(NSString *data) {
+        // this method gets called in MainVC when your SecondVC is dismissed
+        NSLog(@"%@",data);
+    };
+    
+    
+    //dvc.client = _client;
+    //dvc.commande = _commande;
+    //dvc.lstLigneCommande = _lstLigneCommande;
+    //dvc.typeb = @"bddu";
+    [self presentModalViewController:dvc animated:YES];*/
+    
 }
 
 - (IBAction)closePopup:(id)sender {

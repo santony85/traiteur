@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSClient *client;
 @property (strong, nonatomic) NSMutableArray *lstLigneCommande;
 
+@property (weak, nonatomic) IBOutlet UIView *zoomview;
 
 @property (weak, nonatomic) IBOutlet UILabel *popupprod;
 @property (weak, nonatomic) IBOutlet UIView *popup;
@@ -30,4 +31,6 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *selType;
 @property (weak, nonatomic) IBOutlet UISearchBar *mchbar;
 
+
+@property (weak, nonatomic) IBOutlet UIImageView *zoomimg;
 @end

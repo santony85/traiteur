@@ -72,6 +72,8 @@
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         [prefs setInteger:1 forKey:@"fromvideo"];
         NSLog(@"%@",sender);
+        
+        
         accueilViewController *dvc = [self.storyboard instantiateViewControllerWithIdentifier:@"accueilViewController"];
         [self presentModalViewController:dvc animated:YES];
         [dvc affPad:nil];

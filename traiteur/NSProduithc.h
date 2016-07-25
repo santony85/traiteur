@@ -18,6 +18,8 @@
 @property (nonatomic, retain) NSString *commentaire;
 @property (nonatomic, retain) NSString *designation;
 
+@property (nonatomic, retain) NSString *total;
+
 @property (nonatomic, retain) NSString *ref;
 @property (nonatomic, retain) NSString *nom;
 

@@ -16,14 +16,25 @@ mappDelegate = (planbAppDelegate *)[[UIApplication sharedApplication] delegate];
 
 
 
-//idMagasin = @"564dd975f5cedf4653f8cd47";
-//catalogue = @"traiteur";
-
-    idMagasin = @"5617bce9cc2fa1664f32bb1d";
-    catalogue = @"traiteur";
+    /*idMagasin    = @"";
+    catalogue    = @"";
+    nomMagasin   = @"";
+    nomcatalogue = @"Appli Non Configurée";*/
     
-    nomMagasin = @"LECLERC DEMO";
+    	//fromagerie,fruitleg,poissonnerie,boucherie,patisserie,traiteur
+    
+    idMagasin    = @"577bc98f605f4ff06da127eb";
+    catalogue    = @"traiteur";
+    nomMagasin   = @"AUXERRE";
     nomcatalogue = @"Appli Traiteur";
+    
+    
+    //catalogue = @"traiteur";
+    //idMagasin = @"56130420cdd9e59b3d733219";// atlantis
+    //idMagasin = @"56a64d0d8812991f3b33a310";//demo //code 0003
+    
+    
+
 
     
 }

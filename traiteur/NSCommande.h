@@ -23,4 +23,6 @@
 @property (nonatomic, retain) NSString *remise;
 @property (nonatomic, retain) NSString *vendeur;
 @property (nonatomic, retain) NSString *internet;
+@property (nonatomic, retain) NSString *acompte;
+@property (nonatomic, retain) NSString *commentaire;
 @end

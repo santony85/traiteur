@@ -30,6 +30,8 @@
 @property (strong, nonatomic) NSClient *client;
 @property (strong, nonatomic) NSMutableArray *lstLigneCommande;
 
+@property (strong, nonatomic) NSString *typeb;
+
 - (IBAction)affRetour:(id)sender;
 
 @end

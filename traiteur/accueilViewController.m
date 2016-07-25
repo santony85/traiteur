@@ -28,6 +28,7 @@
     dataBase *sqlManager;
     UIAlertView *alert;
     int ii;
+    int numfunct;
 }
 
 @end
@@ -164,8 +165,10 @@
             [_validOK sendActionsForControlEvents:UIControlEventTouchUpInside];
         }
     }
+    
     else {
         if([tmpcode isEqualToString:@"MAJPRO"]){
+            numfunct=0;
             [self hidePopUp];
             alert = [[UIAlertView alloc] initWithTitle:@"ALERTE"
                                                message:@"DEMARRER LA MISE A JOUR"
@@ -174,7 +177,21 @@
                                      otherButtonTitles:@"Ok", nil];
             [alert show];
         }
+        if([tmpcode isEqualToString:@"CONFIG"]){
+            numfunct=1;
+            [self hidePopUp];
+            alert = [[UIAlertView alloc] initWithTitle:@"ALERTE"
+                                               message:@"DEMARRER CONFIGURATION"
+                                              delegate:self
+                                     cancelButtonTitle:@"Annuler"
+                                     otherButtonTitles:@"Ok", nil];
+            [alert show];
+        }
     }
+    
+    
+    
+    
 }
 
 
@@ -344,14 +361,32 @@
 }
 
 
+-(void)affPopUp3{
+    
+    [UIView beginAnimations:NULL context:NULL];
+    [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDelegate:self];
+    
+    [_configView setAlpha:1.0];
+    [UIView commitAnimations];
+}
+
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if((long)buttonIndex==0){
         //cell.qte.text=@"";
     }
     else{
-        [self affPopUp2];
-        [self performSelector:@selector(miseAJour) withObject:nil afterDelay:0.5];
+        if(numfunct==0){
+            [self affPopUp2];
+            [self performSelector:@selector(miseAJour) withObject:nil afterDelay:0.5];
+        }
+        else if(numfunct==1){
+            [self affPopUp3];
+            
+        }
+
         //[self miseAJour];
     }
 }
@@ -360,5 +395,12 @@
 {
     [alert dismissWithClickedButtonIndex:1 animated:YES];
     [alert.delegate alertView:alertView clickedButtonAtIndex:1];
+}
+- (IBAction)hideConfig:(id)sender {
+    [UIView beginAnimations:NULL context:NULL];
+    [UIView setAnimationDuration:0.4];
+    [UIView setAnimationDelegate:self];
+    [_configView setAlpha:0.0];
+    [UIView commitAnimations];
 }
 @end
